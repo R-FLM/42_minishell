@@ -13,7 +13,7 @@
 #ifndef AST_H
 # define AST_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Allocates and initializes a new AST node.

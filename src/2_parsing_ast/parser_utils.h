@@ -16,7 +16,7 @@
 # define FAIL 1
 # define SUCCESS 0
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Parses redirections for an AST node.

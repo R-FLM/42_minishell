@@ -13,7 +13,7 @@
 #ifndef EXEC_H
 # define EXEC_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Executes the AST starting at the root node.

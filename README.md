@@ -20,9 +20,9 @@ Minishell is a lightweight shell implementation that replicates core functionali
 ### It is not a full POSIX shell but aims to match bash behavior closely on our scope.
 
 ### Project structure (high‑level)
-- **minishell.c**
+- **src/minishell.c**
 Main entry point; main loop, integration of tokenization, parsing, execution, and final cleanup.
-- **struct.h**
+- **src/struct.h**
 Global project data structures (t_shell, t_token, t_ast, t_redir, etc.).
 - **src/0_initialization**
 init_shell.c: environment duplication, prompt names, terminal initialization, initial signal setup.

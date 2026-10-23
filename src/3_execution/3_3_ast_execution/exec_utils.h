@@ -16,7 +16,7 @@
 # define SUCCESS 0
 # define FAIL 1
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Executes a command node (builtins or external).

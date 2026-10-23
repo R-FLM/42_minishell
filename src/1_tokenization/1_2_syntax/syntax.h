@@ -13,7 +13,7 @@
 #ifndef SYNTAX_H
 # define SYNTAX_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 # define FAIL 1
 # define SUCCESS 0

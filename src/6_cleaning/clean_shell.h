@@ -13,7 +13,7 @@
 #ifndef CLEAN_SHELL_H
 # define CLEAN_SHELL_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Frees the current prompt line and related buffers.

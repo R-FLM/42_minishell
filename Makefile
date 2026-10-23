@@ -3,7 +3,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -MMD -MP
 LIB = libft/libft.a -lreadline 
-SRC = 	./minishell.c \
+SRC = 	./src/minishell.c \
 		./src/0_initialization/init_shell.c \
 		./src/1_tokenization/1_1_tokens/put_token.c \
 		./src/1_tokenization/1_1_tokens/tokens_add.c \

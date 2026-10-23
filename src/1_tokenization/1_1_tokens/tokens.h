@@ -13,7 +13,7 @@
 #ifndef TOKENS_H
 # define TOKENS_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 # define FAIL 1
 # define SUCCESS 0

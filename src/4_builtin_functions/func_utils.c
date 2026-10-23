@@ -12,7 +12,7 @@
 
 #include "./libft/libft.h"
 #include "./src/3_execution/3_2_cmd_parsing/parser_cmd.h"
-#include "./struct.h"
+#include "./src/struct.h"
 #include <sys/stat.h>
 #include <unistd.h>
 
