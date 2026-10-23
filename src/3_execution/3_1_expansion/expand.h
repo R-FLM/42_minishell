@@ -15,7 +15,7 @@
 
 # include "./libft/libft.h"
 # include "./src/7_error_handling/err.h"
-# include "./struct.h"
+# include "./src/struct.h"
 # include <dirent.h>
 # include <stdlib.h>
 # include <sys/types.h>

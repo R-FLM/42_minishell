@@ -14,7 +14,7 @@
 # define SIGNAL_HANDLING_H
 
 # define _GNU_SOURCE
-# include "./struct.h"
+# include "./src/struct.h"
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdlib.h>

@@ -13,7 +13,7 @@
 #ifndef PARSING_H
 # define PARSING_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 /**
  * Builds an AST from the token list.
  * @param {t_shell *} sh - Shell context.

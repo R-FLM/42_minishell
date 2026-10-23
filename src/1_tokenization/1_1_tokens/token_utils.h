@@ -13,7 +13,7 @@
 #ifndef TOKEN_UTILS_H
 # define TOKEN_UTILS_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 # define FAIL 1
 # define SUCCESS 0

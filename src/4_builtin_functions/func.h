@@ -13,7 +13,7 @@
 #ifndef FUNC_H
 # define FUNC_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 void	ft_exit(t_shell *sh, char **args);
 int		echo(char **args, t_shell *sh);

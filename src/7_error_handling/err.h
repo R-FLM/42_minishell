@@ -13,7 +13,7 @@
 #ifndef ERR_H
 # define ERR_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 # include <errno.h>
 # include <string.h>
 

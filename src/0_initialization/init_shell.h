@@ -18,7 +18,7 @@
 # define STD_PROMPT "minishell> "
 # define ERR_PROMPT "minishell: "
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Initializes the shell context and environment.

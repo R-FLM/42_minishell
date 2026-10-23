@@ -13,7 +13,7 @@
 #include "./src/2_parsing_ast/heredoc.h"
 #include "./src/3_execution/3_1_expansion/expand.h"
 #include "./src/5_signal_handling/signal_handling.h"
-#include "./struct.h"
+#include "./src/struct.h"
 
 int	expand_and_heredoc(t_shell *sh, t_ast *node)
 {

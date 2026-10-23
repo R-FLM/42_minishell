@@ -19,7 +19,7 @@
 #include "./src/5_signal_handling/signal_handling.h"
 #include "./src/6_cleaning/clean_shell.h"
 #include "./src/7_error_handling/err.h"
-#include "./struct.h"
+#include "./src/struct.h"
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <stdio.h>

@@ -13,7 +13,7 @@
 #ifndef PARSER_CMD_H
 # define PARSER_CMD_H
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Resolves a command name into an executable path.

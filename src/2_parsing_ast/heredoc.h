@@ -18,7 +18,7 @@
 # define PROMPT_HD "> "
 # define HEREDOC "/tmp/minishell_heredoc"
 
-# include "./struct.h"
+# include "./src/struct.h"
 
 /**
  * Check all nodes to collect sequentially heredocs
