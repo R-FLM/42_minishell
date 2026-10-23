@@ -1,4 +1,4 @@
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re test leaks norm check
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -MMD -MP
@@ -94,3 +94,18 @@ fclean: clean
 	$(MAKE) -C libft fclean
 
 re: fclean all
+
+test: $(NAME)
+	@bash test/run_suites.sh ./$(NAME) $(if $(VERBOSE),-v)
+
+leaks: $(NAME)
+	@bash test/valgrind_test.sh ./$(NAME)
+
+norm:
+	@command -v norminette > /dev/null || { echo "norminette is not installed"; exit 1; }
+	@out="$$(norminette src libft 2>&1)"; \
+	if printf '%s\n' "$$out" | grep -q ': Error!$$'; then \
+		printf '%s\n' "$$out" | grep -v ': OK!$$'; exit 1; fi; \
+	echo "norminette: $$(printf '%s\n' "$$out" | grep -c ': OK!$$') files OK"
+
+check: norm leaks test

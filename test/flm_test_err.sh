@@ -111,6 +111,8 @@ test_command() {
 	# 	pass_stderr "$expected_stderr"
 	# fi
 
+	rm -f "$bash_stderr_tmp" "$mini_stderr_tmp" "$bash_stdout_tmp" "$mini_stdout_tmp"
+
 	if [ "$failed" -eq 1 ]; then
 		echo -e "${YELLOW}$> $1 ${NC}"
 		error_exitcode "$expected_code" "$exit_code"
@@ -118,12 +120,9 @@ test_command() {
 		error_stderr "$expected_stderr" "$actual_stderr"
 		failed_tests=$((failed_tests + 1))
 		return 0
-	# else
-	# 	pass "$cmd"
-	# 	passed_tests=$((passed_tests + 1))
-	# 	return 1
 	fi
-	rm -f "$bash_stderr_tmp" "$mini_stderr_tmp" "$bash_stdout_tmp" "$mini_stdout_tmp"
+	passed_tests=$((passed_tests + 1))
+	return 1
 }
 
 while IFS= read -r line; do
@@ -142,5 +141,9 @@ while IFS= read -r line; do
 done < "$TEST_FILE"
 
 echo -e "${YELLOW}Total tests : $total_tests"
-echo -e "${GREEN}Total tests : $passed_tests"
+echo -e "${GREEN}Passed tests : $passed_tests"
 echo -e "${RED}Failed tests : $failed_tests${NC}"
+
+if [ "$failed_tests" -ne 0 ]; then
+	exit 1
+fi

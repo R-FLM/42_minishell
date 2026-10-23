@@ -138,5 +138,9 @@ while IFS= read -r line; do
 done < "$TEST_FILE"
 
 echo -e "${YELLOW}Total tests : $total_tests"
-echo -e "${GREEN}Total tests : $passed_tests"
+echo -e "${GREEN}Passed tests : $passed_tests"
 echo -e "${RED}Failed tests : $failed_tests${NC}"
+
+if [ "$failed_tests" -ne 0 ]; then
+	exit 1
+fi

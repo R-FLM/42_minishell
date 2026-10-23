@@ -28,7 +28,7 @@
 | **Peer evaluations** | 3 / 3 passed at 125% |
 | **Bonus** | `&&` and `\|\|` with parentheses for priorities, and the `*` wildcard |
 | **Beyond the subject** | `;` lists, `\` escapes, subshells that can be piped and redirected, multi-line input, a script mode with bash's line numbers, here-document expansion, bash's error messages ([full list](#mandatory-part-bonus-and-beyond)) |
-| **Testing** | 973 automated cases run through bash 5.2 and through minishell, comparing output, errors and exit status: 913 identical ([details](#testing)) |
+| **Testing** | `make test` runs 973 automated cases through bash 5.2 and through minishell, comparing output, errors and exit status: 913 identical. `make leaks` checks every process with Valgrind ([details](#testing)) |
 | **Size** | About 5,700 lines of C in 75 files, plus libft |
 | **Format** | About five weeks, 5 February to 8 March 2026 |
 | **School** | 42 Paris, Common Core curriculum (completed) |
@@ -308,6 +308,31 @@ The handlers do as little as possible: they store the signal number in `g_signal
 
 I tested minishell against the program it imitates. [test/flm_test.sh](test/flm_test.sh) reads a file of command lines and runs each one twice, through `bash --posix` and through minishell, both reading it from standard input. It compares standard output, standard error once each shell's name is removed from the start of the messages, and the exit status, and prints every difference. [test/flm_test_err.sh](test/flm_test_err.sh) does the same but prints only the cases that differ.
 
+Four Makefile rules run every automated check:
+
+| Rule | What it does | Result |
+|---|---|---|
+| `make test` | Runs the three case files below through bash and through minishell, each in a temporary copy of `test/` so that nothing is left in the repository, then lists the commands that differ and a summary. `make test VERBOSE=1` shows each difference in full | 913 / 973 identical, in about 20 seconds |
+| `make leaks` | Runs a [session of 24 command lines](test/valgrind_cmds) under Valgrind, following every child process, and fails if minishell or one of its forks loses a byte, makes a memory error or leaves a descriptor open | 25 processes checked, all clean, in about 6 seconds |
+| `make norm` | Runs norminette on `src` and `libft`, and fails on any error | 111 files OK |
+| `make check` | All three | |
+
+`make leaks` and `make norm` fail at the first problem. `make test` reports the differences instead of failing, since the remaining ones are known and explained below.
+
+```console
+$ make check
+norminette: 111 files OK
+Valgrind: 25 minishell processes checked, 0 bytes lost, 0 errors, no descriptor left open
+test_passed: 250 / 251 identical to bash
+  differs: export
+test_cmd: 46 / 47 identical to bash
+  differs: env foo
+666_test_cmds: 617 / 675 identical to bash
+  differs: export HOLA=hey ; echo bonjour > $HOLA ; echo $HOLA
+  …
+Total: 913 / 973 cases identical to bash
+```
+
 | Case file | Cases | Identical to bash | Content |
 |---|---|---|---|
 | [test_passed](test/test_passed) | 251 | 250 | `echo` and quoting, `$` expansion, wildcards, redirections and pipes, `&&`, `\|\|` and parentheses, syntax errors, `exit` with every kind of argument, `cd`, `export` and `unset` |
@@ -317,29 +342,15 @@ I tested minishell against the program it imitates. [test/flm_test.sh](test/flm_
 
 Of the 60 differences, 44 come from the expansion order described in [Design trade-offs](#design-trade-offs-and-scope). The others are `SHLVL` and `_` in the environment listings, `cd //` (bash keeps the double slash in `PWD`), the order of wildcard matches in a directory with mixed-case names, and `env` given an argument, which the subject rules out.
 
-Memory and descriptors are checked with Valgrind, following every child process:
+In the `make leaks` session, the shell process frees all of its allocations and ends with no descriptor open. Each fork that exits without calling `execve`, such as a builtin in a pipeline, a subshell or a command that is not found, loses 0 bytes and leaves no descriptor open. The only block such a fork still holds is get_next_line's buffer of the commands being read, released when the process exits. The programs minishell starts with `execve` are not checked: their memory is not its own.
 
-```bash
-valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes ./minishell < script.sh
-```
-
-On a script with pipes, subshells, builtins, redirections and errors, the shell process frees all 1,291 of its allocations and ends with no descriptor open. Every child that exits without calling `execve`, such as a builtin in a pipeline or a subshell, loses 0 bytes and leaves no descriptor open. The only block such a child still holds is get_next_line's buffer of the script being read, released when the process exits.
-
-```bash
-make
-cd test
-bash flm_test.sh ../minishell test_passed        # 251 cases, about 4 seconds
-bash flm_test_err.sh ../minishell test_cmd       # only the differences
-norminette ../src ../libft                       # all 111 files pass the Norm
-```
-
-The 666_test_cmds cases create and delete files in the current directory: run them in a copy of `test/`.
+To run one case file by hand, from `test/`: `bash flm_test.sh ../minishell test_passed`. The 666_test_cmds cases create and delete files in the directory they run in, which `make test` keeps out of the repository.
 
 ---
 
 ## Instructions
 
-**Requirements:** `cc` (gcc or clang), `make`, and GNU Readline with its headers (`libreadline-dev` on Debian and Ubuntu). Developed and tested on Linux, with bash 5.2 as the reference.
+**Requirements:** `cc` (gcc or clang), `make`, and GNU Readline with its headers (`libreadline-dev` on Debian and Ubuntu). The test rules also need bash for `make test`, Valgrind for `make leaks` and norminette for `make norm`. Developed and tested on Linux, with bash 5.2 as the reference.
 
 ```bash
 git clone https://github.com/R-FLM/42_minishell.git
@@ -348,7 +359,7 @@ make          # builds libft, then minishell, every bonus included
 ./minishell
 ```
 
-Other rules: `clean` (object files), `fclean` (object files, libft and `minishell`), `re` (rebuild from scratch).
+Other rules: `clean` (object files), `fclean` (object files, libft and `minishell`), `re` (rebuild from scratch), and the [test rules](#testing): `test` (compare with bash), `leaks` (Valgrind), `norm` (norminette) and `check` (all three).
 
 ### Usage
 
@@ -402,7 +413,7 @@ $ echo $?
 2. **A process orchestrator.** The [executor](src/3_execution/3_3_ast_execution/exec.c) runs a tree of processes with pipes, short-circuit logic and subshells, without leaking descriptors and with every status collected: the core of a job runner or of a build tool's task graph.
 3. **A shell to drive from another program.** In script mode, minishell reads its commands from standard input and exits with the last status, so a test harness, a CI step or another program can drive it through a pipe. A link renames it, prompt and messages included.
 4. **One error path for a command-line tool.** The [error](src/7_error_handling/err.c) function formats `program: context: reason`, adds line numbers in script mode, sets the status, and either continues or cleans up and exits: a pattern that keeps every failure of a CLI consistent and leak-free.
-5. **A differential tester for any shell.** `bash test/flm_test.sh path/to/shell cases.txt` compares any shell with `bash --posix` on output, errors and status, using any file of command lines. Changing the reference command makes it work for any tool that reimplements another.
+5. **A differential tester for any shell.** `bash test/flm_test.sh path/to/shell cases.txt` compares any shell with `bash --posix` on output, errors and status, using any file of command lines, and `bash test/run_suites.sh path/to/shell` runs all 973 cases on it. Changing the reference command makes it work for any tool that reimplements another.
 6. **Wildcard matching**, as a standalone function:
 
 <details>
@@ -545,6 +556,9 @@ parser.c
 │   ├── test_passed              251 cases
 │   ├── test_cmd                 47 cases
 │   ├── 666_test_cmds            675 automated cases and 36 manual checks
+│   ├── run_suites.sh            make test: every case file, in a temporary copy
+│   ├── valgrind_test.sh         make leaks: the session below under Valgrind
+│   ├── valgrind_cmds            24 command lines covering pipes, subshells, builtins, errors
 │   └── …                        Lighter testers, a program that crashes on purpose, logs
 ├── asset/                       The score and the grade page
 ├── README_42_format.md          The README in the format the 42 subject requires
