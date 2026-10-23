@@ -1,0 +1,24 @@
+echo hello | cat -e | wc -l
+echo a | cat | cat | cat | wc -l
+ls *.c && nocmd || echo fallback
+false || echo x && echo y ; echo z
+(cd / && pwd) > out ; cat out
+(echo sub ; exit 4) | cat ; echo $?
+export A+=b B C=d ; unset A ; env | grep -c C=d
+export | grep -c B
+cd /tmp ; pwd ; cd -
+cd a b
+pwd extra
+echo $? $HOME "$USER" '$PATH' | tr a-z A-Z > /dev/null
+echo hello\ world \$HOME
+< nofile cat
+echo a > f1 >> f2 < f1
+echo hi > *
+./no_exec
+/
+""
+echo "unclosed
+echo a | | b
+echo a ;; echo b
+exit 1 2
+exit 3
